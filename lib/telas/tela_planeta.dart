@@ -60,24 +60,29 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-//Dados validados com sucesso
       _formKey.currentState!.save();
 
       if (widget.isIncluir) {
-        _inserirPlaneta();
+        _inserirPlaneta().then((_) {
+          _finalizar();
+        });
       } else {
-        _alterarPlaneta();
+        _alterarPlaneta().then((_) {
+          _finalizar();
+        });
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              'Dados do planeta foram ${widget.isIncluir ? 'incluídos' : 'alterados'} com sucesso!'),
-        ),
-      );
-      Navigator.of(context).pop();
-      widget.onFinalizado();
     }
+  }
+
+  void _finalizar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+            'Dados do planeta foram ${widget.isIncluir ? 'incluídos' : 'alterados'} com sucesso!'),
+      ),
+    );
+    Navigator.of(context).pop();
+    widget.onFinalizado();
   }
 
   @override
@@ -85,7 +90,7 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Cadastrar Registro'),
+        title: const Text('Cadastrar Planetas'),
         elevation: 3,
       ),
       body: Padding(
@@ -128,17 +133,17 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                     return null;
                   },
                   onSaved: (value) {
-                    _planeta.distancia = double.parse(value!);
+                    _planeta.tamanho = double.parse(value!);
                   },
                 ),
                 TextFormField(
                   controller: _distanciaController,
-                  decoration: const InputDecoration(labelText: 'distancia (em km)'),
+                  decoration: const InputDecoration(labelText: 'Distância (em km)'),
                   keyboardType: TextInputType.number,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, informe o tamanho do planeta';
+                      return 'Por favor, informe a distância do planeta';
                     }
                     if (double.tryParse(value) == null) {
                       return 'Por favor, informe um valor numérico válido';
@@ -146,7 +151,7 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                     return null;
                   },
                   onSaved: (value) {
-                    _planeta.apelido = double.parse(value!) as String?;
+                    _planeta.distancia = double.parse(value!);
                   },
                 ),
                 TextFormField(
@@ -163,12 +168,11 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () =>
-                          Navigator.of(context).pop(), //_submitForm,
+                      onPressed: () => Navigator.of(context).pop(),
                       child: const Text('Cancelar'),
                     ),
                     ElevatedButton(
-                      onPressed: _submitForm, //_submitForm,
+                      onPressed: _submitForm,
                       child: const Text('Confirmar'),
                     ),
                   ],
@@ -181,3 +185,4 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
     );
   }
 }
+
