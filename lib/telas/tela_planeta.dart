@@ -172,7 +172,11 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                       child: const Text('Cancelar'),
                     ),
                     ElevatedButton(
-                      onPressed: _submitForm,
+                      onPressed: () {
+                        if (mounted) {
+                          _submitForm();
+                        }
+                      },
                       child: const Text('Confirmar'),
                     ),
                   ],
